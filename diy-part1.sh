@@ -1,18 +1,11 @@
 #!/bin/bash
-#
-# https://github.com/P3TERX/Actions-OpenWrt
-# File name: diy-part1.sh
-# Description: OpenWrt DIY script part 1 (Before Update feeds)
-#
-# Copyright (c) 2019-2024 P3TERX <https://p3terx.com>
-#
-# This is free software, licensed under the MIT License.
-# See /LICENSE for more information.
-#
 
-# Uncomment a feed source
-#sed -i 's/^#\(.*helloworld\)/\1/' feeds.conf.default
+shopt -s extglob
 
-# Add a feed source
-echo 'src-git helloworld https://github.com/fw876/helloworld' >>feeds.conf.default
-#echo 'src-git passwall https://github.com/xiaorouji/openwrt-passwall' >>feeds.conf.default
+SHELL_FOLDER=$(dirname $(readlink -f "$0"))
+
+rm -rf package/kernel/qca-* package/boot/uboot-envtools package/firmware/ipq-wifi package/firmware/ath11k-firmware package/kernel/mac80211
+
+git_clone_path ipq50xx-mainline-kernel-5.15-openwrt-23.05 https://github.com/hzyitc/openwrt-redmi-ax3000 target/linux/ipq50xx package/firmware/ipq-wifi package/firmware/ath11k-firmware package/kernel/mac80211 package/boot/uboot-envtools package/kernel/qca-nss-dp package/kernel/qca-ssdk
+
+sed -i "s/wpad-basic-wolfssl/wpad-basic-mbedtls/" target/linux/ipq50xx/Makefile
